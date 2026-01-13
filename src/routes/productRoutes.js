@@ -21,7 +21,9 @@ router.get('/', async (req, res) => {
             query.name = { $regex: search, $options: 'i' };
         }
 
-        const products = await Product.find(query);
+
+        const limit = req.query.limit ? parseInt(req.query.limit) : 0;
+        const products = await Product.find(query).limit(limit);
         res.json(products);
     } catch (error) {
         console.error('Error fetching products:', error);

@@ -1,0 +1,11 @@
+[
+  {
+    "firstName": "Abhay",
+    "lastName": "Rana",
+    "email": "officialabhi730@gmail.com",
+    "password": "$2b$10$cYAPjfdUa1kuEPzne/PQZOsZ2AT.HkgZ6jNK5RAXGgX7cZooUagQ6",
+    "isAdmin": false,
+    "_id": "1768219427563",
+    "createdAt": "2026-01-12T12:03:47.563Z"
+  }
+]

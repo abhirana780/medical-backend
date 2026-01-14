@@ -24,6 +24,7 @@ router.get('/dashboard', protect, admin, async (req, res) => {
             Product.countDocuments(),
             User.countDocuments(),
             Order.aggregate([
+                { $match: { isPaid: true } },
                 { $group: { _id: null, total: { $sum: '$totalPrice' } } }
             ]),
             Order.find({})

@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
         postalCode: String,
         country: String,
         isDefault: { type: Boolean, default: false }
+    }],
+    wishlist: [{
+        type: String, // Product ID (String as per Product Schema)
+        ref: 'Product'
     }]
 }, { timestamps: true });
 

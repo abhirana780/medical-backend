@@ -161,4 +161,40 @@ router.put('/:id/deliver', protect, admin, async (req, res) => {
     }
 });
 
+// @desc    Track order public
+// @route   POST /api/orders/track
+// @access  Public
+router.post('/track', async (req, res) => {
+    try {
+        const { orderId, email } = req.body;
+
+        try {
+            const order = await Order.findById(orderId).populate('user', 'email');
+
+            if (order) {
+                // Check if email matches the user who placed the order
+                if (order.user && order.user.email.toLowerCase() === email.toLowerCase()) {
+                    return res.json({
+                        _id: order._id,
+                        createdAt: order.createdAt,
+                        isPaid: order.isPaid,
+                        isDelivered: order.isDelivered,
+                        deliveredAt: order.deliveredAt,
+                        totalPrice: order.totalPrice,
+                        orderItems: order.orderItems,
+                        status: order.isDelivered ? 'Delivered' : order.isPaid ? 'Processing' : 'Pending Payment'
+                    });
+                }
+            }
+
+            res.status(404).json({ message: 'Order not found or email does not match.' });
+
+        } catch (err) {
+            res.status(404).json({ message: 'Order not found.' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
 module.exports = router;

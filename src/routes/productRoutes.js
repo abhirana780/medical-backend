@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const Product = require('../models/Product');
 const { protect, admin } = require('../middleware/authMiddleware');
 
@@ -7,8 +8,7 @@ const { protect, admin } = require('../middleware/authMiddleware');
 // @route   GET /api/products
 // @access  Public
 router.get('/', async (req, res) => {
-    const category = req.query.category;
-    const search = req.query.search;
+    const { search, category, brand, rating, minPrice, maxPrice, inStock, sort } = req.query;
 
     try {
         let query = {};
@@ -17,13 +17,39 @@ router.get('/', async (req, res) => {
             query.category = category;
         }
 
+        if (brand) {
+            query.brand = brand;
+        }
+
         if (search) {
             query.name = { $regex: search, $options: 'i' };
         }
 
+        if (minPrice || maxPrice) {
+            query.price = {};
+            if (minPrice) query.price.$gte = Number(minPrice);
+            if (maxPrice) query.price.$lte = Number(maxPrice);
+        }
+
+        if (rating) {
+            query.rating = { $gte: Number(rating) };
+        }
+
+        if (inStock === 'true') {
+            query.countInStock = { $gt: 0 };
+        }
+
+        let sortOption = {};
+        if (sort === 'priceAsc') {
+            sortOption.price = 1;
+        } else if (sort === 'priceDesc') {
+            sortOption.price = -1;
+        } else if (sort === 'newest') {
+            sortOption.createdAt = -1;
+        }
 
         const limit = req.query.limit ? parseInt(req.query.limit) : 0;
-        const products = await Product.find(query).limit(limit);
+        const products = await Product.find(query).sort(sortOption).limit(limit);
         res.json(products);
     } catch (error) {
         console.error('Error fetching products:', error);
@@ -103,12 +129,12 @@ router.put('/:id', protect, admin, async (req, res) => {
         const product = await Product.findById(req.params.id);
 
         if (product) {
-            product.name = name || product.name;
-            product.price = price || product.price;
-            product.description = description || product.description;
-            product.image = image || product.image;
-            product.category = category || product.category;
-            product.countInStock = countInStock || product.countInStock;
+            product.name = name !== undefined ? name : product.name;
+            product.price = price !== undefined ? price : product.price;
+            product.description = description !== undefined ? description : product.description;
+            product.image = image !== undefined ? image : product.image;
+            product.category = category !== undefined ? category : product.category;
+            product.countInStock = countInStock !== undefined ? countInStock : product.countInStock;
             product.isNewArrival = isNewArrival !== undefined ? isNewArrival : product.isNewArrival;
             product.isSale = isSale !== undefined ? isSale : product.isSale;
 
@@ -119,6 +145,46 @@ router.put('/:id', protect, admin, async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+});
+
+// @desc    Create new review
+// @route   POST /api/products/:id/reviews
+// @access  Private
+router.post('/:id/reviews', protect, async (req, res) => {
+    const { rating, comment } = req.body;
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+        const alreadyReviewed = product.reviews.find(
+            (r) => r.user.toString() === req.user._id.toString()
+        );
+
+        if (alreadyReviewed) {
+            res.status(400);
+            throw new Error('Product already reviewed');
+        }
+
+        const review = {
+            name: req.user.name,
+            rating: Number(rating),
+            comment,
+            user: req.user._id,
+        };
+
+        product.reviews.push(review);
+
+        product.numReviews = product.reviews.length;
+
+        product.rating =
+            product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+            product.reviews.length;
+
+        await product.save();
+        res.status(201).json({ message: 'Review added' });
+    } else {
+        res.status(404);
+        throw new Error('Product not found');
     }
 });
 

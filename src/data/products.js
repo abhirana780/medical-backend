@@ -8,7 +8,8 @@ const products = [
         image: 'https://www.scottsmedicalsupply.com/cdn/shop/collections/chair_medium.jpg?v=1513020067',
         description: 'Lightweight aluminum frame with 8" wheels for superior mobility.',
         rating: 4.8,
-        reviews: 12,
+        numReviews: 12,
+        reviews: [],
         isNewArrival: true,
         isSale: false
     },
@@ -20,7 +21,8 @@ const products = [
         image: 'https://www.scottsmedicalsupply.com/cdn/shop/products/airgoultralight_large.jpg?v=1532370914',
         description: 'Ultra-light frame makes lifting and storage easy.',
         rating: 4.5,
-        reviews: 8,
+        numReviews: 8,
+        reviews: [],
         isNewArrival: false,
         isSale: true
     },
@@ -33,7 +35,8 @@ const products = [
         image: 'https://www.scottsmedicalsupply.com/cdn/shop/products/travelite_large.jpg?v=1532366852',
         description: 'Lightweight and strong, comes with a carry bag.',
         rating: 4.7,
-        reviews: 20,
+        numReviews: 20,
+        reviews: [],
         isNewArrival: true
     },
     {
@@ -44,7 +47,8 @@ const products = [
         image: 'https://www.scottsmedicalsupply.com/cdn/shop/products/transportaluminumchair_large.jpg?v=1532366223',
         description: 'Compact design folds for easy transport and storage.',
         rating: 4.3,
-        reviews: 15,
+        numReviews: 15,
+        reviews: [],
         isNewArrival: false
     },
     {
@@ -56,7 +60,8 @@ const products = [
         image: 'https://www.scottsmedicalsupply.com/cdn/shop/products/superlighttransport_large.jpg?v=1532366571',
         description: 'Weighs only 19 lbs. Great for travel.',
         rating: 4.9,
-        reviews: 45,
+        numReviews: 45,
+        reviews: [],
         isNewArrival: false,
         isSale: true
     },
@@ -68,7 +73,8 @@ const products = [
         image: 'https://www.scottsmedicalsupply.com/cdn/shop/products/steeltransport_large.jpg?v=1532363985',
         description: 'Durable steel frame provides reliable stability.',
         rating: 4.6,
-        reviews: 30,
+        numReviews: 30,
+        reviews: [],
         isNewArrival: false
     },
     {
@@ -80,7 +86,8 @@ const products = [
         image: 'https://www.scottsmedicalsupply.com/cdn/shop/products/scooter_large.jpg?v=1533225616',
         description: 'Heavy duty scooter with 350 lb weight capacity.',
         rating: 5.0,
-        reviews: 10,
+        numReviews: 10,
+        reviews: [],
         isNewArrival: true
     },
     {
@@ -91,7 +98,8 @@ const products = [
         image: 'https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=400&auto=format&fit=crop',
         description: 'State-of-the-art reclining wheelchair for pediatric use.',
         rating: 4.8,
-        reviews: 5,
+        numReviews: 5,
+        reviews: [],
         isNewArrival: true,
         isSale: true
     },
@@ -102,10 +110,11 @@ const products = [
         name: 'Hill-Rom Versa Care Bed',
         category: 'Hospital',
         price: 4500.00,
-        image: 'https://images.unsplash.com/photo-1516574187841-693083f0493c?q=80&w=400&auto=format&fit=crop', // Placeholder for hospital bed
+        image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=600&auto=format&fit=crop', // Real hospital bed image
         description: 'Advanced hospital bed with pressure redistribution surface.',
         rating: 5.0,
-        reviews: 3,
+        numReviews: 3,
+        reviews: [],
         isNewArrival: true
     },
     {
@@ -116,7 +125,8 @@ const products = [
         image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=400&auto=format&fit=crop', // Ophthalmoscope/Otoscope
         description: 'Complete diagnostic set including ophthalmoscope and otoscope.',
         rating: 4.9,
-        reviews: 15,
+        numReviews: 15,
+        reviews: [],
         isNewArrival: false
     },
     {
@@ -127,7 +137,8 @@ const products = [
         image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=400&auto=format&fit=crop', // Exam table
         description: 'Classic hardwood exam table with adjustable backrest.',
         rating: 4.7,
-        reviews: 8,
+        numReviews: 8,
+        reviews: [],
         isNewArrival: false
     },
     {
@@ -138,7 +149,8 @@ const products = [
         image: 'https://images.unsplash.com/photo-1583947215259-38e31be8751f?q=80&w=400&auto=format&fit=crop',
         description: 'Sterile latex-free surgical gloves.',
         rating: 4.6,
-        reviews: 150,
+        numReviews: 150,
+        reviews: [],
         isSale: true
     },
     {
@@ -149,7 +161,8 @@ const products = [
         image: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?q=80&w=400&auto=format&fit=crop',
         description: 'Accurate and easy-to-use upper arm blood pressure monitor.',
         rating: 4.8,
-        reviews: 80,
+        numReviews: 80,
+        reviews: [],
         isNewArrival: true
     },
 
@@ -162,7 +175,8 @@ const products = [
         image: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?q=80&w=400&auto=format&fit=crop', // Generic medical supply
         description: 'Highly absorbent sterile gauze pads for wound dressing.',
         rating: 4.7,
-        reviews: 40
+        numReviews: 40,
+        reviews: []
     },
 
     // --- Orthopedic ---
@@ -174,7 +188,8 @@ const products = [
         image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=400&auto=format&fit=crop', // Generic
         description: 'Supportive knee brace for injury recovery and prevention.',
         rating: 4.5,
-        reviews: 25
+        numReviews: 25,
+        reviews: []
     },
 
     // --- Diabetic ---
@@ -186,7 +201,8 @@ const products = [
         image: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?q=80&w=400&auto=format&fit=crop',
         description: 'Simple and accurate blood glucose monitoring system.',
         rating: 4.8,
-        reviews: 60
+        numReviews: 60,
+        reviews: []
     }
 ];
 

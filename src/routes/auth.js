@@ -86,12 +86,12 @@ router.get('/profile', protect, async (req, res) => {
             name: `${user.firstName} ${user.lastName}`,
             email: user.email,
             isAdmin: user.isAdmin,
-            phoneNumber: user.phoneNumber,
-            dateOfBirth: user.dateOfBirth,
-            gender: user.gender,
-            height: user.height,
-            weight: user.weight,
-            addresses: user.addresses
+            phoneNumber: user.phoneNumber || '',
+            dateOfBirth: user.dateOfBirth || '',
+            gender: user.gender || '',
+            height: user.height || '',
+            weight: user.weight || '',
+            addresses: user.addresses || []
         });
     } else {
         res.status(404).json({ message: 'User not found' });
@@ -106,15 +106,15 @@ router.put('/profile', protect, async (req, res) => {
         const user = await User.findById(req.user._id);
 
         if (user) {
-            user.firstName = req.body.firstName || user.firstName;
-            user.lastName = req.body.lastName || user.lastName;
-            user.email = req.body.email || user.email;
+            user.firstName = req.body.firstName !== undefined ? req.body.firstName : user.firstName;
+            user.lastName = req.body.lastName !== undefined ? req.body.lastName : user.lastName;
+            user.email = req.body.email !== undefined ? req.body.email : user.email;
 
-            user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
-            user.dateOfBirth = req.body.dateOfBirth || user.dateOfBirth;
-            user.gender = req.body.gender || user.gender;
-            user.height = req.body.height || user.height;
-            user.weight = req.body.weight || user.weight;
+            user.phoneNumber = req.body.phoneNumber !== undefined ? req.body.phoneNumber : user.phoneNumber;
+            user.dateOfBirth = req.body.dateOfBirth !== undefined ? req.body.dateOfBirth : user.dateOfBirth;
+            user.gender = req.body.gender !== undefined ? req.body.gender : user.gender;
+            user.height = req.body.height !== undefined ? req.body.height : user.height;
+            user.weight = req.body.weight !== undefined ? req.body.weight : user.weight;
             if (req.body.addresses) {
                 user.addresses = req.body.addresses;
             }

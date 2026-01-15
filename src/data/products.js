@@ -9,7 +9,22 @@ const products = [
         description: 'Lightweight aluminum frame with 8" wheels for superior mobility.',
         rating: 4.8,
         numReviews: 12,
-        reviews: [],
+        reviews: [
+            {
+                name: 'Sarah Mitchell',
+                rating: 5,
+                comment: 'This walker has been a lifesaver for my mother. It is lightweight and easy for her to maneuver around the house.',
+                user: '64b6f1f1bcf86cd799439011',
+                createdAt: '2023-12-01T10:00:00.000Z'
+            },
+            {
+                name: 'James Wilson',
+                rating: 4,
+                comment: 'Sturdy and reliable. The blue color is nice too.',
+                user: '64b6f1f1bcf86cd799439012',
+                createdAt: '2023-11-15T10:00:00.000Z'
+            }
+        ],
         isNewArrival: true,
         isSale: false
     },
@@ -22,7 +37,15 @@ const products = [
         description: 'Ultra-light frame makes lifting and storage easy.',
         rating: 4.5,
         numReviews: 8,
-        reviews: [],
+        reviews: [
+            {
+                name: 'Emily Davis',
+                rating: 5,
+                comment: 'Excellent rollator! Very smooth on uneven surfaces.',
+                user: '64b6f1f1bcf86cd799439013',
+                createdAt: '2024-01-05T10:00:00.000Z'
+            }
+        ],
         isNewArrival: false,
         isSale: true
     },
@@ -36,7 +59,22 @@ const products = [
         description: 'Lightweight and strong, comes with a carry bag.',
         rating: 4.7,
         numReviews: 20,
-        reviews: [],
+        reviews: [
+            {
+                name: 'Robert Brown',
+                rating: 5,
+                comment: 'Perfect for traveling! Folds up very small and fits in the trunk easily.',
+                user: '64b6f1f1bcf86cd799439014',
+                createdAt: '2023-10-20T10:00:00.000Z'
+            },
+            {
+                name: 'Linda Martinez',
+                rating: 4,
+                comment: 'Lightweight but sturdy. Could use more padding on the armrests.',
+                user: '64b6f1f1bcf86cd799439015',
+                createdAt: '2023-09-12T10:00:00.000Z'
+            }
+        ],
         isNewArrival: true
     },
     {
@@ -61,7 +99,15 @@ const products = [
         description: 'Weighs only 19 lbs. Great for travel.',
         rating: 4.9,
         numReviews: 45,
-        reviews: [],
+        reviews: [
+            {
+                name: 'Michael Scott',
+                rating: 5,
+                comment: 'Incredibly light! I can lift it with one hand.',
+                user: '64b6f1f1bcf86cd799439016',
+                createdAt: '2024-01-10T10:00:00.000Z'
+            }
+        ],
         isNewArrival: false,
         isSale: true
     },
@@ -114,7 +160,15 @@ const products = [
         description: 'Advanced hospital bed with pressure redistribution surface.',
         rating: 5.0,
         numReviews: 3,
-        reviews: [],
+        reviews: [
+            {
+                name: 'Dr. Gregory House',
+                rating: 5,
+                comment: 'Top of the line hospital bed. Excellent features for patient care.',
+                user: '64b6f1f1bcf86cd799439017',
+                createdAt: '2023-12-25T10:00:00.000Z'
+            }
+        ],
         isNewArrival: true
     },
     {

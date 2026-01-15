@@ -56,4 +56,22 @@ router.put('/:id', protect, admin, async (req, res) => {
     }
 });
 
+// @desc    Delete a prescription
+// @route   DELETE /api/prescriptions/:id
+// @access  Private/Admin
+router.delete('/:id', protect, admin, async (req, res) => {
+    try {
+        const result = await Prescription.deleteOne({ _id: req.params.id });
+
+        if (result.deletedCount > 0) {
+            res.json({ message: 'Prescription removed' });
+        } else {
+            res.status(404).json({ message: 'Prescription not found' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
 module.exports = router;

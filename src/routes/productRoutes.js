@@ -57,6 +57,35 @@ router.get('/', async (req, res) => {
     }
 });
 
+// @desc    Get top reviews
+// @route   GET /api/products/reviews/top
+// @access  Public
+router.get('/reviews/top', async (req, res) => {
+    try {
+        const reviews = await Product.aggregate([
+            { $match: { reviews: { $exists: true, $ne: [] } } },
+            { $unwind: '$reviews' },
+            { $sort: { 'reviews.createdAt': -1 } },
+            { $limit: 6 },
+            {
+                $project: {
+                    _id: 0,
+                    productName: '$name',
+                    productImage: '$image',
+                    name: '$reviews.name',
+                    rating: '$reviews.rating',
+                    comment: '$reviews.comment',
+                    createdAt: '$reviews.createdAt',
+                }
+            }
+        ]);
+        res.json(reviews);
+    } catch (error) {
+        console.error('Error fetching top reviews:', error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
 // @desc    Fetch single product
 // @route   GET /api/products/:id
 // @access  Public
@@ -152,39 +181,114 @@ router.put('/:id', protect, admin, async (req, res) => {
 // @route   POST /api/products/:id/reviews
 // @access  Private
 router.post('/:id/reviews', protect, async (req, res) => {
-    const { rating, comment } = req.body;
-    const product = await Product.findById(req.params.id);
+    try {
+        const { rating, comment } = req.body;
+        const product = await Product.findById(req.params.id);
 
-    if (product) {
-        const alreadyReviewed = product.reviews.find(
-            (r) => r.user.toString() === req.user._id.toString()
-        );
+        if (product) {
+            const alreadyReviewed = product.reviews.find(
+                (r) => r.user.toString() === req.user._id.toString()
+            );
 
-        if (alreadyReviewed) {
-            res.status(400);
-            throw new Error('Product already reviewed');
+            if (alreadyReviewed) {
+                return res.status(400).json({ message: 'Product already reviewed' });
+            }
+
+            const review = {
+                name: `${req.user.firstName} ${req.user.lastName}`,
+                rating: Number(rating),
+                comment,
+                user: req.user._id,
+            };
+
+            product.reviews.push(review);
+
+            product.numReviews = product.reviews.length;
+
+            product.rating =
+                product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+                product.reviews.length;
+
+            await product.save();
+            res.status(201).json({ message: 'Review added' });
+        } else {
+            res.status(404).json({ message: 'Product not found' });
         }
+    } catch (error) {
+        console.error('Error adding review:', error);
+        res.status(500).json({ message: error.message });
+    }
+});
 
-        const review = {
-            name: req.user.name,
-            rating: Number(rating),
-            comment,
-            user: req.user._id,
-        };
+// @desc    Get all reviews (Admin)
+// @route   GET /api/products/reviews/all
+// @access  Private/Admin
+router.get('/reviews/all', protect, admin, async (req, res) => {
+    try {
+        const products = await Product.find({ 'reviews.0': { $exists: true } }).select('name image reviews');
+        let allReviews = [];
 
-        product.reviews.push(review);
+        products.forEach(product => {
+            product.reviews.forEach(review => {
+                allReviews.push({
+                    _id: review._id,
+                    product: product._id,
+                    productName: product.name,
+                    productImage: product.image,
+                    name: review.name,
+                    rating: review.rating,
+                    comment: review.comment,
+                    user: review.user,
+                    createdAt: review.createdAt
+                });
+            });
+        });
 
-        product.numReviews = product.reviews.length;
+        // Sort by newest
+        allReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-        product.rating =
-            product.reviews.reduce((acc, item) => item.rating + acc, 0) /
-            product.reviews.length;
+        res.json(allReviews);
+    } catch (error) {
+        console.error('Error fetching all reviews:', error);
+        res.status(500).json({ message: error.message });
+    }
+});
 
-        await product.save();
-        res.status(201).json({ message: 'Review added' });
-    } else {
-        res.status(404);
-        throw new Error('Product not found');
+// @desc    Delete a review
+// @route   DELETE /api/products/:id/reviews/:reviewId
+// @access  Private/Admin
+router.delete('/:id/reviews/:reviewId', protect, admin, async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+
+        if (product) {
+            const review = product.reviews.find(
+                (r) => r._id.toString() === req.params.reviewId.toString()
+            );
+
+            if (review) {
+                product.reviews = product.reviews.filter(
+                    (r) => r._id.toString() !== req.params.reviewId.toString()
+                );
+
+                product.numReviews = product.reviews.length;
+                product.rating =
+                    product.reviews.length > 0
+                        ? product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+                        product.reviews.length
+                        : 0;
+
+                await product.save();
+                res.json({ message: 'Review removed' });
+            } else {
+                res.status(404).json({ message: 'Review not found' });
+            }
+        } else {
+            res.status(404).json({ message: 'Product not found' });
+        }
+    } catch (error) {
+        console.error('Error deleting review:', error);
+        res.status(500).json({ message: error.message });
     }
 });
 
